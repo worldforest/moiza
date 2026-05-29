@@ -314,6 +314,112 @@ function Calendar({ selected, onToggle, voteMap={}, confirmedDates=[], totalMemb
   );
 }
 
+// ── Overview Calendar ─────────────────────────────────────────────
+function OverviewCalendar({ groups }) {
+  const today = new Date();
+  const [year, setYear]   = useState(today.getFullYear());
+  const [month, setMonth] = useState(today.getMonth());
+  const [popup, setPopup] = useState(null);
+
+  const dateMap = {};
+  Object.values(groups).forEach(g => {
+    const voteMap = {};
+    (g.members||[]).forEach(m=>(m.dates||[]).forEach(d=>{ if(!voteMap[d]) voteMap[d]=[]; voteMap[d].push(m.name); }));
+    (g.confirmedDates||[]).forEach(d => {
+      if (!dateMap[d]) dateMap[d] = [];
+      dateMap[d].push({ groupName: g.name, members: voteMap[d]||[], total: g.members.length });
+    });
+  });
+
+  const firstDay    = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const cells = [];
+  for (let i=0; i<firstDay; i++) cells.push(null);
+  for (let d=1; d<=daysInMonth; d++) cells.push(d);
+
+  const prev = () => { setPopup(null); if(month===0){setYear(y=>y-1);setMonth(11);}else{setMonth(m=>m-1);} };
+  const next = () => { setPopup(null); if(month===11){setYear(y=>y+1);setMonth(0);}else{setMonth(m=>m+1);} };
+
+  const allConfirmed = Object.entries(dateMap).sort((a,b)=>a[0].localeCompare(b[0]));
+
+  return (
+    <div>
+      <div className="cal-hdr">
+        <button className="btn btn-ghost btn-sm" onClick={prev}>←</button>
+        <span className="cal-month">{year}년 {MONTHS[month]}</span>
+        <button className="btn btn-ghost btn-sm" onClick={next}>→</button>
+      </div>
+
+      <div className="cal-grid" style={{marginBottom:24}}>
+        {DOWS.map(d=><div key={d} className="cal-dow">{d}</div>)}
+        {cells.map((d,i) => {
+          if (!d) return <div key={`e${i}`} className="cal-day emp"/>;
+          const ds = dateStr(year, month, d);
+          const entries = dateMap[ds];
+          const isPast  = new Date(year,month,d) < new Date(today.getFullYear(),today.getMonth(),today.getDate());
+          const isOpen  = popup?.ds===ds;
+          return (
+            <div key={ds}
+              className={`cal-day${isPast?' past':''}`}
+              style={{
+                background: entries ? C.sage : undefined,
+                color: entries ? 'white' : undefined,
+                outline: isOpen ? `2px solid ${C.accentBlue}` : undefined,
+                cursor: entries ? 'pointer' : 'default',
+                flexDirection:'column', gap:1, fontSize:11,
+              }}
+              onClick={e => {
+                if (!entries) return;
+                const rect = e.currentTarget.getBoundingClientRect();
+                setPopup(p=>p?.ds===ds ? null : { ds, top:rect.bottom+6, left:rect.left });
+              }}
+            >
+              <span>{d}</span>
+              {entries && <span style={{fontSize:6,lineHeight:1}}>{entries.length}그룹</span>}
+            </div>
+          );
+        })}
+      </div>
+
+      {allConfirmed.length > 0 && (
+        <div>
+          <div className="rule"><span>확정 날짜 전체</span></div>
+          {allConfirmed.map(([ds, entries]) => (
+            <div key={ds} className="card mb2">
+              <div style={{fontWeight:600,marginBottom:8}}>{formatDate(ds)}</div>
+              {entries.map((e,i) => (
+                <div key={i} style={{display:'flex',alignItems:'center',justifyContent:'space-between',fontSize:13,marginBottom:4}}>
+                  <span><span className="chip" style={{marginRight:6}}>{e.groupName}</span>{e.members.join(', ')}</span>
+                  <span className="muted">{e.members.length}/{e.total}명</span>
+                </div>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+
+      {allConfirmed.length===0 && (
+        <div className="muted tc" style={{padding:'36px 0'}}>아직 확정된 날짜가 없어요.</div>
+      )}
+
+      {popup && (
+        <>
+          <div style={{position:'fixed',inset:0,zIndex:49}} onClick={()=>setPopup(null)}/>
+          <div style={{position:'fixed',top:Math.min(popup.top,window.innerHeight-200),left:Math.max(8,Math.min(popup.left-16,window.innerWidth-240)),zIndex:50,background:'white',border:`1px solid ${C.blue}`,borderRadius:4,padding:'14px 16px',boxShadow:'0 4px 20px rgba(0,0,0,.10)',minWidth:200}}>
+            <div style={{fontSize:10,color:C.muted,letterSpacing:1,marginBottom:10,textTransform:'uppercase'}}>{formatDate(popup.ds)}</div>
+            {(dateMap[popup.ds]||[]).map((e,i)=>(
+              <div key={i} style={{marginBottom:10}}>
+                <div style={{fontSize:13,fontWeight:600,marginBottom:2}}>{e.groupName}</div>
+                <div style={{fontSize:11,color:C.muted}}>{e.members.join(', ')} ({e.members.length}/{e.total}명)</div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ── Host: Group List ──────────────────────────────────────────────
 function HostDashboard({ onSelectGroup }) {
   const { groups, loading } = useGroups();
@@ -321,6 +427,7 @@ function HostDashboard({ onSelectGroup }) {
   const [showCreate, setShowCreate] = useState(false);
   const [newName, setNewName]       = useState('');
   const [creating, setCreating]     = useState(false);
+  const [hostTab, setHostTab]       = useState('groups');
 
   const create = async () => {
     setCreating(true);
@@ -345,49 +452,58 @@ function HostDashboard({ onSelectGroup }) {
           <h1 className="hand">모임 날짜 조율</h1>
           <p className="muted mt2">그룹을 만들고 친구들과 날짜를 조율하세요.</p>
         </div>
-        <button className="btn btn-primary" onClick={()=>setShowCreate(true)}>+ 그룹 추가</button>
+        {hostTab==='groups' && <button className="btn btn-primary" onClick={()=>setShowCreate(true)}>+ 그룹 추가</button>}
       </div>
 
-      {showCreate && (
-        <div className="card" style={{borderLeft:`3px solid ${C.accentBlue}`}}>
-          <div className="fg">
-            <label className="lbl">그룹 이름</label>
-            <input className="inp" placeholder="비우면 '청첩장모임'으로 설정" value={newName}
-              onChange={e=>setNewName(e.target.value)} onKeyDown={e=>e.key==='Enter'&&create()} autoFocus />
-          </div>
-          <div className="flex g3">
-            <button className="btn btn-outline btn-sm" onClick={()=>setShowCreate(false)}>취소</button>
-            <button className="btn btn-primary btn-sm" onClick={create} disabled={creating}>
-              {creating ? '생성 중...' : '생성'}
-            </button>
-          </div>
-        </div>
-      )}
+      <div className="tabs">
+        <button className={`tab ${hostTab==='groups'?'on':''}`} onClick={()=>setHostTab('groups')}>그룹 목록</button>
+        <button className={`tab ${hostTab==='calendar'?'on':''}`} onClick={()=>setHostTab('calendar')}>전체 캘린더</button>
+      </div>
 
-      <div className="rule"><span>그룹 목록 ({list.length})</span></div>
+      {hostTab==='calendar' && <OverviewCalendar groups={groups} />}
 
-      {list.length===0 && (
-        <div className="tc" style={{padding:'56px 0'}}>
-          <div style={{fontFamily:'IsYun',fontSize:48,marginBottom:10,color:C.blue}}>♡</div>
-          <p className="muted">아직 그룹이 없어요. 첫 그룹을 만들어보세요!</p>
-        </div>
-      )}
-
-      {list.map(g=>(
-        <div key={g.id} className="gcard" onClick={()=>onSelectGroup(g.id)}>
-          <div>
-            <div style={{fontFamily:'IsYun',fontSize:22,fontWeight:600}}>{g.name}</div>
-            <div className="muted" style={{marginTop:4}}>
-              멤버 {g.members.length}명 · 비밀번호 <strong style={{letterSpacing:2}}>{g.password}</strong>
-              {g.confirmedDates?.length>0 && <span className="badge badge-g" style={{marginLeft:8}}>확정 {g.confirmedDates.length}일</span>}
+      {hostTab==='groups' && <>
+        {showCreate && (
+          <div className="card" style={{borderLeft:`3px solid ${C.accentBlue}`}}>
+            <div className="fg">
+              <label className="lbl">그룹 이름</label>
+              <input className="inp" placeholder="비우면 '청첩장모임'으로 설정" value={newName}
+                onChange={e=>setNewName(e.target.value)} onKeyDown={e=>e.key==='Enter'&&create()} autoFocus />
+            </div>
+            <div className="flex g3">
+              <button className="btn btn-outline btn-sm" onClick={()=>setShowCreate(false)}>취소</button>
+              <button className="btn btn-primary btn-sm" onClick={create} disabled={creating}>
+                {creating ? '생성 중...' : '생성'}
+              </button>
             </div>
           </div>
-          <div className="flex g2 ic">
-            <span className="badge badge-r">{g.members.length}명 응답</span>
-            <span style={{color:C.muted,fontSize:17}}>›</span>
+        )}
+
+        <div className="rule"><span>그룹 목록 ({list.length})</span></div>
+
+        {list.length===0 && (
+          <div className="tc" style={{padding:'56px 0'}}>
+            <div style={{fontFamily:'IsYun',fontSize:48,marginBottom:10,color:C.blue}}>♡</div>
+            <p className="muted">아직 그룹이 없어요. 첫 그룹을 만들어보세요!</p>
           </div>
-        </div>
-      ))}
+        )}
+
+        {list.map(g=>(
+          <div key={g.id} className="gcard" onClick={()=>onSelectGroup(g.id)}>
+            <div>
+              <div style={{fontFamily:'IsYun',fontSize:22,fontWeight:600}}>{g.name}</div>
+              <div className="muted" style={{marginTop:4}}>
+                멤버 {g.members.length}명 · 비밀번호 <strong style={{letterSpacing:2}}>{g.password}</strong>
+                {g.confirmedDates?.length>0 && <span className="badge badge-g" style={{marginLeft:8}}>확정 {g.confirmedDates.length}일</span>}
+              </div>
+            </div>
+            <div className="flex g2 ic">
+              <span className="badge badge-r">{g.members.length}명 응답</span>
+              <span style={{color:C.muted,fontSize:17}}>›</span>
+            </div>
+          </div>
+        ))}
+      </>}
     </div>
   );
 }
