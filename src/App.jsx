@@ -61,44 +61,52 @@ function formatDate(s) {
 
 // ── Palette ───────────────────────────────────────────────────────
 const C = {
-  ivory:'#FAF7F2', blush:'#E8C5B0', rose:'#C4785A', deepRose:'#8B4A35',
-  sage:'#7A9E7E', darkSage:'#4A6B4E', ink:'#2C2016', muted:'#8A7A6E', lightBlush:'#F5E6DC',
+  ivory: '#FAF8F2',
+  blue: '#B8CDE0',
+  accentBlue: '#7AA3C0',
+  deepBlue: '#3D6B8E',
+  sage: '#7A9E7E',
+  darkSage: '#4A6B4E',
+  ink: '#1C1C1C',
+  muted: '#8A8A80',
+  lightBlue: '#EBF2F8',
 };
 
 const css = `
-  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300&family=Jost:wght@300;400;500&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap');
+  @font-face{font-family:'IsYun';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2202-2@1.0/LeeSeoyun.woff') format('woff');font-weight:normal;font-display:swap}
   *{box-sizing:border-box;margin:0;padding:0}
-  body{background:${C.ivory};font-family:'Jost',sans-serif;color:${C.ink}}
+  body{background:${C.ivory};font-family:'IsYun',sans-serif;color:${C.ink}}
   button{cursor:pointer;border:none;background:none;font-family:inherit}
   input,select{font-family:inherit}
-  .serif{font-family:'Cormorant Garamond',serif}
+  .hand{font-family:'IsYun',sans-serif}
   .app{min-height:100vh}
 
   .hdr{background:${C.ink};color:${C.ivory};padding:16px 28px;display:flex;align-items:center;justify-content:space-between}
-  .hdr-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:300;letter-spacing:2px}
+  .hdr-title{font-family:'IsYun',sans-serif;font-size:22px;font-weight:600;letter-spacing:1px}
   .hdr-sub{font-size:10px;letter-spacing:3px;text-transform:uppercase;opacity:.45;margin-top:2px}
 
   .page{max-width:820px;margin:0 auto;padding:36px 22px}
   .page-sm{max-width:500px;margin:0 auto;padding:36px 22px}
 
   .rule{display:flex;align-items:center;gap:14px;margin:28px 0}
-  .rule::before,.rule::after{content:'';flex:1;height:1px;background:${C.blush}}
+  .rule::before,.rule::after{content:'';flex:1;height:1px;background:${C.blue}}
   .rule span{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:${C.muted};white-space:nowrap}
 
-  .card{background:white;border:1px solid ${C.blush};border-radius:2px;padding:24px;margin-bottom:18px;position:relative;overflow:hidden}
-  .card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:${C.rose}}
+  .card{background:white;border:1px solid ${C.blue};border-radius:4px;padding:24px;margin-bottom:18px;position:relative;overflow:hidden}
+  .card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;background:${C.accentBlue}}
 
-  .gcard{background:white;border:1px solid ${C.blush};border-radius:2px;padding:20px 24px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;transition:box-shadow .18s}
-  .gcard:hover{box-shadow:0 4px 18px rgba(196,120,90,.13)}
+  .gcard{background:white;border:1px solid ${C.blue};border-radius:4px;padding:20px 24px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:14px;cursor:pointer;transition:box-shadow .18s}
+  .gcard:hover{box-shadow:0 4px 18px rgba(122,163,192,.18)}
 
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 22px;font-size:11px;letter-spacing:2px;text-transform:uppercase;border-radius:1px;transition:all .18s;font-weight:500;cursor:pointer}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 22px;font-size:11px;letter-spacing:2px;text-transform:uppercase;border-radius:2px;transition:all .18s;font-weight:500;cursor:pointer}
   .btn-primary{background:${C.ink};color:${C.ivory}}
-  .btn-primary:hover{background:${C.deepRose}}
+  .btn-primary:hover{background:${C.deepBlue}}
   .btn-primary:disabled{opacity:.45;cursor:not-allowed}
   .btn-outline{border:1px solid ${C.ink};color:${C.ink}}
   .btn-outline:hover{background:${C.ink};color:${C.ivory}}
-  .btn-rose{background:${C.rose};color:white}
-  .btn-rose:hover{background:${C.deepRose}}
+  .btn-rose{background:${C.accentBlue};color:white}
+  .btn-rose:hover{background:${C.deepBlue}}
   .btn-confirm{background:${C.sage};color:white}
   .btn-confirm:hover{background:${C.darkSage}}
   .btn-ghost{color:${C.muted};font-size:11px;padding:7px 10px}
@@ -107,47 +115,50 @@ const css = `
 
   .fg{margin-bottom:18px}
   .lbl{display:block;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:${C.muted};margin-bottom:7px}
-  .inp{width:100%;padding:10px 13px;border:1px solid ${C.blush};border-radius:1px;font-size:14px;background:${C.ivory};color:${C.ink};outline:none;transition:border-color .18s}
-  .inp:focus{border-color:${C.rose}}
+  .inp{width:100%;padding:10px 13px;border:1px solid ${C.blue};border-radius:2px;font-size:14px;background:${C.ivory};color:${C.ink};outline:none;transition:border-color .18s}
+  .inp:focus{border-color:${C.accentBlue}}
   select.inp{cursor:pointer}
 
-  .tabs{display:flex;border-bottom:1px solid ${C.blush};margin-bottom:26px;overflow-x:auto}
+  .tabs{display:flex;border-bottom:1px solid ${C.blue};margin-bottom:26px;overflow-x:auto}
   .tab{padding:9px 18px;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;border-bottom:2px solid transparent;margin-bottom:-1px;color:${C.muted};cursor:pointer;transition:all .18s;background:none;border-top:none;border-left:none;border-right:none;white-space:nowrap}
-  .tab.on{color:${C.rose};border-bottom-color:${C.rose}}
+  .tab.on{color:${C.accentBlue};border-bottom-color:${C.accentBlue}}
 
   .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:9px;letter-spacing:1px;text-transform:uppercase}
-  .badge-r{background:${C.lightBlush};color:${C.deepRose}}
+  .badge-r{background:${C.lightBlue};color:${C.deepBlue}}
   .badge-g{background:#e0f0e0;color:${C.darkSage}}
+  .badge-lg{font-family:'IsYun',sans-serif;font-size:15px;letter-spacing:0;padding:4px 14px;border-radius:20px;text-transform:none;background:${C.lightBlue};color:${C.deepBlue}}
 
-  .alert{padding:11px 15px;border-radius:1px;font-size:13px;margin-bottom:14px}
-  .alert-r{background:${C.lightBlush};color:${C.deepRose};border-left:3px solid ${C.rose}}
+  .alert{padding:11px 15px;border-radius:2px;font-size:13px;margin-bottom:14px}
+  .alert-r{background:${C.lightBlue};color:${C.deepBlue};border-left:3px solid ${C.accentBlue}}
   .alert-g{background:#e8f4e8;color:${C.darkSage};border-left:3px solid ${C.sage}}
 
   .cal-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-  .cal-month{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:400}
+  .cal-month{font-family:'IsYun',sans-serif;font-size:22px;font-weight:600}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
   .cal-dow{text-align:center;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:${C.muted};padding:3px 0}
   .cal-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:12px;border-radius:50%;cursor:pointer;border:1px solid transparent;transition:all .13s;position:relative}
-  .cal-day:hover:not(.emp):not(.past){border-color:${C.rose}}
-  .cal-day.sel{background:${C.rose};color:white;outline:2px solid ${C.deepRose};outline-offset:1px}
+  .cal-day:hover:not(.emp):not(.past){border-color:${C.accentBlue}}
+  .cal-day.sel{background:${C.accentBlue};color:white;outline:2px solid ${C.deepBlue};outline-offset:1px}
   .cal-day.conf{background:${C.sage};color:white}
   .cal-day.emp,.cal-day.past{cursor:default}
   .cal-day.past{opacity:.28}
 
-  .drow{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border:1px solid ${C.blush};border-radius:1px;margin-bottom:7px;background:white}
-  .drow.top{border-left:3px solid ${C.rose}}
+  .drow{display:flex;align-items:center;justify-content:space-between;padding:11px 15px;border:1px solid ${C.blue};border-radius:2px;margin-bottom:7px;background:white}
+  .drow.top{border-left:3px solid ${C.accentBlue}}
   .drow.cfd{border-left:3px solid ${C.sage};background:#f0f7f0}
 
   .chips{display:flex;gap:4px;flex-wrap:wrap}
-  .chip{background:${C.lightBlush};color:${C.deepRose};font-size:9px;font-weight:500;letter-spacing:.5px;padding:2px 7px;border-radius:20px}
+  .chip{background:${C.lightBlue};color:${C.deepBlue};font-size:9px;font-weight:500;letter-spacing:.5px;padding:2px 7px;border-radius:20px}
 
-  .overlay{position:fixed;inset:0;background:rgba(44,32,22,.42);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
-  .modal{background:white;border:1px solid ${C.blush};border-radius:2px;padding:30px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto}
-  .modal-title{font-family:'Cormorant Garamond',serif;font-size:22px;margin-bottom:5px}
+  .overlay{position:fixed;inset:0;background:rgba(28,28,28,.42);display:flex;align-items:center;justify-content:center;z-index:100;padding:20px}
+  .modal{background:white;border:1px solid ${C.blue};border-radius:4px;padding:30px;max-width:460px;width:100%;max-height:90vh;overflow-y:auto}
+  .modal-title{font-family:'IsYun',sans-serif;font-size:26px;margin-bottom:5px}
 
-  .link-box{background:${C.ivory};border:1px dashed ${C.blush};padding:10px 14px;border-radius:1px;font-size:11px;color:${C.muted};word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .link-box{background:${C.ivory};border:1px dashed ${C.blue};padding:10px 14px;border-radius:2px;font-size:11px;color:${C.muted};word-break:break-all;display:flex;align-items:center;justify-content:space-between;gap:10px}
 
-  .floral{color:${C.blush};font-size:16px;opacity:.7}
+  .invite-card{border:2px solid ${C.blue};border-radius:4px;padding:40px 30px;margin:8px 0 24px;position:relative;text-align:center}
+  .invite-corner{position:absolute;color:${C.blue};font-size:13px;line-height:1}
+
   .flex{display:flex}.flex-col{display:flex;flex-direction:column}
   .ic{align-items:center}.jb{justify-content:space-between}
   .g2{gap:8px}.g3{gap:12px}.g4{gap:16px}
@@ -155,18 +166,52 @@ const css = `
   .mb2{margin-bottom:8px}.mb4{margin-bottom:16px}
   .w100{width:100%}.tc{text-align:center}
   .muted{color:${C.muted};font-size:12px}
-  h1.serif{font-size:32px;font-weight:300;line-height:1.2}
-  h2.serif{font-size:22px;font-weight:400}
+  h1.hand{font-size:38px;font-weight:700;line-height:1.1}
+  h2.hand{font-size:28px;font-weight:600}
   .spin{display:inline-block;animation:spin 1s linear infinite}
   @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
 
   @media(max-width:600px){
     .page,.page-sm{padding:18px 14px}
-    h1.serif{font-size:24px}
+    h1.hand{font-size:30px}
     .hdr{padding:13px 14px}
     .gcard{flex-direction:column;align-items:flex-start}
   }
 `;
+
+// ── Couple Illustration ───────────────────────────────────────────
+function CoupleIllustration() {
+  return (
+    <svg viewBox="0 0 160 195" width="130" height="158" fill="none" xmlns="http://www.w3.org/2000/svg"
+      style={{display:'block',margin:'10px auto 0'}}>
+      {/* Heart */}
+      <path d="M80 18 C80 12 72 7 72 14 C72 19 80 26 80 26 C80 26 88 19 88 14 C88 7 80 12 80 18Z" fill={C.blue}/>
+
+      {/* Groom */}
+      <circle cx="57" cy="52" r="13" stroke={C.ink} strokeWidth="2"/>
+      <path d="M44 68 Q57 61 70 68 L73 118 L41 118 Z" stroke={C.ink} strokeWidth="2"/>
+      <path d="M55 65 L53 84 L57 92 L61 84 L59 65Z" fill={C.ink}/>
+      <line x1="49" y1="118" x2="47" y2="170" stroke={C.ink} strokeWidth="2"/>
+      <line x1="65" y1="118" x2="67" y2="170" stroke={C.ink} strokeWidth="2"/>
+      <path d="M41 170 Q47 176 54 170" stroke={C.ink} strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M61 170 Q67 176 74 170" stroke={C.ink} strokeWidth="2.5" strokeLinecap="round"/>
+      <path d="M70 86 Q82 95 88 103" stroke={C.ink} strokeWidth="2" strokeLinecap="round"/>
+
+      {/* Bride */}
+      <circle cx="106" cy="52" r="13" stroke={C.ink} strokeWidth="2"/>
+      <path d="M95 46 Q106 34 117 46" stroke={C.ink} strokeWidth="1.8" strokeLinecap="round"/>
+      <path d="M93 68 Q106 61 119 68 L116 96 L96 96 Z" stroke={C.ink} strokeWidth="2"/>
+      <path d="M96 96 Q76 130 74 178 L138 178 Q136 130 116 96" stroke={C.ink} strokeWidth="2"/>
+      <path d="M96 96 Q106 102 116 96" stroke={C.ink} strokeWidth="1.2"/>
+      <path d="M94 86 Q84 95 88 103" stroke={C.ink} strokeWidth="2" strokeLinecap="round"/>
+      <path d="M87 178 Q92 184 97 178 L97 185" stroke={C.ink} strokeWidth="2" strokeLinecap="round"/>
+      <path d="M111 178 Q116 184 121 178 L121 185" stroke={C.ink} strokeWidth="2" strokeLinecap="round"/>
+
+      {/* Holding hands */}
+      <circle cx="88" cy="105" r="5" fill={C.blue} stroke={C.ink} strokeWidth="1.5"/>
+    </svg>
+  );
+}
 
 // ── Calendar ──────────────────────────────────────────────────────
 function Calendar({ selected, onToggle, voteMap={}, confirmedDates=[], totalMembers=0, myName='', showOthers=false }) {
@@ -185,7 +230,7 @@ function Calendar({ selected, onToggle, voteMap={}, confirmedDates=[], totalMemb
   const next = () => { setPopup(null); if (month===11){setYear(y=>y+1);setMonth(0);}else{setMonth(m=>m+1);} };
 
   const maxVotes = Math.max(1, ...cells.filter(Boolean).map(d => (voteMap[dateStr(year,month,d)]||[]).length));
-  const heatBg = c => { if(!c) return 'transparent'; const r=c/maxVotes; if(r<0.4) return `rgba(232,197,176,${0.3+r})`; if(r<0.7) return `rgba(196,120,90,${0.3+r*0.5})`; return `rgba(139,74,53,${0.5+r*0.4})`; };
+  const heatBg = c => { if(!c) return 'transparent'; const r=c/maxVotes; if(r<0.4) return `rgba(184,205,224,${0.3+r})`; if(r<0.7) return `rgba(122,163,192,${0.3+r*0.5})`; return `rgba(61,107,142,${0.5+r*0.4})`; };
   const heatFg = c => (c/maxVotes)>=0.6 ? 'white' : C.ink;
 
   const handleDay = (e, ds, isPast) => {
@@ -201,14 +246,14 @@ function Calendar({ selected, onToggle, voteMap={}, confirmedDates=[], totalMemb
     <div style={{position:'relative'}}>
       <div className="cal-hdr">
         <button className="btn btn-ghost btn-sm" onClick={prev}>←</button>
-        <span className="cal-month serif">{year}년 {MONTHS[month]}</span>
+        <span className="cal-month">{year}년 {MONTHS[month]}</span>
         <button className="btn btn-ghost btn-sm" onClick={next}>→</button>
       </div>
 
       {showOthers && (
         <div style={{display:'flex',gap:14,marginBottom:10,fontSize:10,color:C.muted,flexWrap:'wrap'}}>
-          <span><span style={{display:'inline-block',width:10,height:10,borderRadius:'50%',background:C.rose,marginRight:4,verticalAlign:'middle'}}/>내 선택</span>
-          <span><span style={{display:'inline-block',width:10,height:10,borderRadius:'50%',background:'rgba(196,120,90,.35)',marginRight:4,verticalAlign:'middle'}}/>다른 멤버</span>
+          <span><span style={{display:'inline-block',width:10,height:10,borderRadius:'50%',background:C.accentBlue,marginRight:4,verticalAlign:'middle'}}/>내 선택</span>
+          <span><span style={{display:'inline-block',width:10,height:10,borderRadius:'50%',background:'rgba(122,163,192,.35)',marginRight:4,verticalAlign:'middle'}}/>다른 멤버</span>
           <span><span style={{display:'inline-block',width:10,height:10,borderRadius:'50%',background:C.sage,marginRight:4,verticalAlign:'middle'}}/>확정</span>
         </div>
       )}
@@ -229,18 +274,18 @@ function Calendar({ selected, onToggle, voteMap={}, confirmedDates=[], totalMemb
           if (isPast)        cls += ' past';
           else if (isConf)   cls += ' conf';
           else if (showOthers) {
-            if (isSel)          style = { background:C.rose, color:'white', outline:`2px solid ${C.deepRose}`, outlineOffset:'1px' };
+            if (isSel)          style = { background:C.accentBlue, color:'white', outline:`2px solid ${C.deepBlue}`, outlineOffset:'1px' };
             else if (others.length) style = { background:heatBg(others.length), color:heatFg(others.length) };
           } else {
             if (isSel) cls += ' sel';
           }
-          if (isOpen) style.outline = `2px solid ${C.rose}`;
+          if (isOpen) style.outline = `2px solid ${C.accentBlue}`;
 
           return (
             <div key={ds} className={cls} style={style} onClick={e=>handleDay(e,ds,isPast)}>
               {d}
               {showOthers && votes.length>0 && !isConf && (
-                <span style={{position:'absolute',top:1,right:1,fontSize:7,fontWeight:600,color:isSel?'rgba(255,255,255,.85)':C.deepRose,lineHeight:1}}>{votes.length}</span>
+                <span style={{position:'absolute',top:1,right:1,fontSize:7,fontWeight:600,color:isSel?'rgba(255,255,255,.85)':C.deepBlue,lineHeight:1}}>{votes.length}</span>
               )}
             </div>
           );
@@ -250,18 +295,18 @@ function Calendar({ selected, onToggle, voteMap={}, confirmedDates=[], totalMemb
       {showOthers && popup && (
         <>
           <div style={{position:'fixed',inset:0,zIndex:49}} onClick={()=>setPopup(null)} />
-          <div style={{position:'fixed',top:Math.min(popup.top,window.innerHeight-160),left:Math.max(8,Math.min(popup.left-16,window.innerWidth-200)),zIndex:50,background:'white',border:`1px solid ${C.blush}`,borderRadius:3,padding:'12px 15px',boxShadow:'0 4px 20px rgba(0,0,0,.12)',minWidth:160}}>
+          <div style={{position:'fixed',top:Math.min(popup.top,window.innerHeight-160),left:Math.max(8,Math.min(popup.left-16,window.innerWidth-200)),zIndex:50,background:'white',border:`1px solid ${C.blue}`,borderRadius:4,padding:'12px 15px',boxShadow:'0 4px 20px rgba(0,0,0,.10)',minWidth:160}}>
             <div style={{fontSize:10,color:C.muted,letterSpacing:1,marginBottom:7,textTransform:'uppercase'}}>{formatDate(popup.ds)}</div>
             {(voteMap[popup.ds]||[]).length===0
               ? <div style={{fontSize:12,color:C.muted}}>선택한 사람 없음</div>
               : (voteMap[popup.ds]||[]).map(n=>(
                   <div key={n} style={{display:'flex',alignItems:'center',gap:6,fontSize:13,marginBottom:4}}>
-                    <span style={{width:6,height:6,borderRadius:'50%',background:n===myName?C.rose:C.sage,display:'inline-block',flexShrink:0}}/>
+                    <span style={{width:6,height:6,borderRadius:'50%',background:n===myName?C.accentBlue:C.sage,display:'inline-block',flexShrink:0}}/>
                     {n}{n===myName?' (나)':''}
                   </div>
                 ))
             }
-            <div style={{fontSize:10,color:C.muted,marginTop:7,borderTop:`1px solid ${C.blush}`,paddingTop:5}}>{(voteMap[popup.ds]||[]).length}/{totalMembers}명 가능</div>
+            <div style={{fontSize:10,color:C.muted,marginTop:7,borderTop:`1px solid ${C.blue}`,paddingTop:5}}>{(voteMap[popup.ds]||[]).length}/{totalMembers}명 가능</div>
           </div>
         </>
       )}
@@ -278,17 +323,16 @@ function HostDashboard({ onSelectGroup }) {
   const [creating, setCreating]     = useState(false);
 
   const create = async () => {
-    if (!newName.trim()) return;
     setCreating(true);
     const id = genId();
-    const g  = { id, name: newName.trim(), password: genPass(), members: [], confirmedDates: [], createdAt: Date.now() };
+    const g  = { id, name: newName.trim() || '청첩장모임', password: genPass(), members: [], confirmedDates: [], createdAt: Date.now() };
     await saveGroup(g);
     setNewName(''); setShowCreate(false); setCreating(false);
   };
 
   if (loading) return (
     <div className="page tc" style={{paddingTop:80}}>
-      <span className="spin" style={{fontSize:24}}>✦</span>
+      <span className="spin" style={{fontSize:24}}>♡</span>
       <p className="muted mt4">불러오는 중...</p>
     </div>
   );
@@ -297,23 +341,23 @@ function HostDashboard({ onSelectGroup }) {
     <div className="page">
       <div className="flex ic jb mb4">
         <div>
-          <div className="floral mb2">✦ 청첩장 모임 ✦</div>
-          <h1 className="serif">모임 관리</h1>
+          <div style={{fontFamily:'IsYun',fontSize:13,letterSpacing:2,color:C.accentBlue,marginBottom:6}}>09 · 13 현석 ♡ 지현</div>
+          <h1 className="hand">모임 날짜 조율</h1>
           <p className="muted mt2">그룹을 만들고 친구들과 날짜를 조율하세요.</p>
         </div>
         <button className="btn btn-primary" onClick={()=>setShowCreate(true)}>+ 그룹 추가</button>
       </div>
 
       {showCreate && (
-        <div className="card" style={{borderLeft:`3px solid ${C.rose}`}}>
+        <div className="card" style={{borderLeft:`3px solid ${C.accentBlue}`}}>
           <div className="fg">
             <label className="lbl">그룹 이름</label>
-            <input className="inp" placeholder="예: 대학 친구들, 직장 동료" value={newName}
+            <input className="inp" placeholder="비우면 '청첩장모임'으로 설정" value={newName}
               onChange={e=>setNewName(e.target.value)} onKeyDown={e=>e.key==='Enter'&&create()} autoFocus />
           </div>
           <div className="flex g3">
             <button className="btn btn-outline btn-sm" onClick={()=>setShowCreate(false)}>취소</button>
-            <button className="btn btn-primary btn-sm" onClick={create} disabled={creating||!newName.trim()}>
+            <button className="btn btn-primary btn-sm" onClick={create} disabled={creating}>
               {creating ? '생성 중...' : '생성'}
             </button>
           </div>
@@ -324,7 +368,7 @@ function HostDashboard({ onSelectGroup }) {
 
       {list.length===0 && (
         <div className="tc" style={{padding:'56px 0'}}>
-          <div style={{fontSize:38,marginBottom:10}}>🌸</div>
+          <div style={{fontFamily:'IsYun',fontSize:48,marginBottom:10,color:C.blue}}>♡</div>
           <p className="muted">아직 그룹이 없어요. 첫 그룹을 만들어보세요!</p>
         </div>
       )}
@@ -332,7 +376,7 @@ function HostDashboard({ onSelectGroup }) {
       {list.map(g=>(
         <div key={g.id} className="gcard" onClick={()=>onSelectGroup(g.id)}>
           <div>
-            <div style={{fontFamily:'Cormorant Garamond,serif',fontSize:19}}>{g.name}</div>
+            <div style={{fontFamily:'IsYun',fontSize:22,fontWeight:600}}>{g.name}</div>
             <div className="muted" style={{marginTop:4}}>
               멤버 {g.members.length}명 · 비밀번호 <strong style={{letterSpacing:2}}>{g.password}</strong>
               {g.confirmedDates?.length>0 && <span className="badge badge-g" style={{marginLeft:8}}>확정 {g.confirmedDates.length}일</span>}
@@ -354,7 +398,7 @@ function GroupDetail({ groupId, onBack }) {
   const [tab, setTab]       = useState('dates');
   const [copied, setCopied] = useState(false);
 
-  if (loading) return <div className="page muted tc" style={{paddingTop:60}}><span className="spin">✦</span></div>;
+  if (loading) return <div className="page muted tc" style={{paddingTop:60}}><span className="spin">♡</span></div>;
   if (!group)  return <div className="page muted tc" style={{paddingTop:60}}>그룹을 찾을 수 없어요.</div>;
 
   const voteMap = {};
@@ -373,10 +417,10 @@ function GroupDetail({ groupId, onBack }) {
   const appUrl  = window.location.origin + window.location.pathname;
   const shareUrl = `${appUrl}?group=${group.id}`;
   const handleCopy = () => {
-	const text = `우리 모임날짜 잡아보자!\n[ ${group.name} ]\n\n링크: ${shareUrl}\n비밀번호: ${group.password}\n\n👉 링크 접속 → 비밀번호 입력 → 가능한 날짜 선택해줘!`;
-  	navigator.clipboard?.writeText(text).catch(()=>{});
-  	setCopied(true); setTimeout(()=>setCopied(false), 2000);  
-};
+    const text = `우리 모임날짜 잡아보자!\n[ ${group.name} ]\n\n링크: ${shareUrl}\n비밀번호: ${group.password}\n\n👉 링크 접속 → 비밀번호 입력 → 가능한 날짜 선택해줘!`;
+    navigator.clipboard?.writeText(text).catch(()=>{});
+    setCopied(true); setTimeout(()=>setCopied(false), 2000);
+  };
 
   const addresses = group.members.filter(m=>m.address).map(m=>({name:m.name,address:m.address}));
 
@@ -384,7 +428,7 @@ function GroupDetail({ groupId, onBack }) {
     <div className="page">
       <button className="btn btn-ghost" style={{paddingLeft:0,marginBottom:14}} onClick={onBack}>← 목록으로</button>
       <div className="flex ic jb mb2">
-        <h2 className="serif">{group.name}</h2>
+        <h2 className="hand">{group.name}</h2>
         <span className="badge badge-r">멤버 {total}명</span>
       </div>
 
@@ -394,7 +438,7 @@ function GroupDetail({ groupId, onBack }) {
           <span style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{shareUrl}</span>
           <button className="btn btn-sm btn-outline" onClick={handleCopy}>{copied?'✓ 복사됨':'복사'}</button>
         </div>
-        <p className="muted mt2" style={{fontSize:11}}>비밀번호: <strong style={{color:C.deepRose,letterSpacing:2}}>{group.password}</strong></p>
+        <p className="muted mt2" style={{fontSize:11}}>비밀번호: <strong style={{color:C.deepBlue,letterSpacing:2}}>{group.password}</strong></p>
       </div>
 
       <div className="tabs">
@@ -513,7 +557,7 @@ function PlaceTab({ addresses }) {
           <div className="alert alert-g"><strong>📍 {result.area}</strong><p style={{marginTop:5,fontSize:12}}>{result.reason}</p></div>
           <div className="card">
             <div className="lbl mb2">추천 장소</div>
-            {result.suggestions.map((s,i)=><div key={i} className="drow" style={{marginBottom:7}}><span>🌸 {s}</span></div>)}
+            {result.suggestions.map((s,i)=><div key={i} className="drow" style={{marginBottom:7}}><span>♡ {s}</span></div>)}
           </div>
           <button className="btn btn-outline w100 mt2" onClick={recommend}>다시 추천</button>
         </div>
@@ -565,13 +609,21 @@ function MemberView({ groupId }) {
 
   if (step==='auth') return (
     <div className="page-sm">
-      <div className="tc mb4">
-        <div style={{fontSize:36,marginBottom:6}}>💌</div>
-        {groupName && <div className="badge badge-r" style={{marginBottom:8}}>{groupName}</div>}
-        <h1 className="serif">청첩장 모임 날짜</h1>
-        <p className="muted mt2">비밀번호를 입력해 참여하세요.</p>
+      <div className="invite-card">
+        <span className="invite-corner" style={{top:8,left:10}}>♡</span>
+        <span className="invite-corner" style={{top:8,right:10}}>♡</span>
+        <span className="invite-corner" style={{bottom:8,left:10}}>♡</span>
+        <span className="invite-corner" style={{bottom:8,right:10}}>♡</span>
+
+        <div style={{fontSize:10,letterSpacing:4,textTransform:'uppercase',color:C.muted,marginBottom:10}}>Save the Date</div>
+        <h1 className="hand" style={{fontSize:42,fontWeight:700,lineHeight:1}}>현석 ♡ 지현</h1>
+        <div style={{fontFamily:'IsYun',fontSize:22,color:C.accentBlue,margin:'8px 0 0'}}>09 · 13</div>
+        <CoupleIllustration />
+        {groupName && <div className="badge-lg" style={{marginTop:10,display:'inline-block'}}>{groupName}</div>}
       </div>
+
       <div className="card">
+        <p className="muted mb4" style={{textAlign:'center',fontSize:13}}>비밀번호를 입력해 참여하세요.</p>
         <div className="fg">
           <label className="lbl">비밀번호</label>
           <input className="inp" placeholder="예: AB12" value={pw}
@@ -588,8 +640,8 @@ function MemberView({ groupId }) {
   if (step==='info') return (
     <div className="page-sm">
       <div className="tc mb4">
-        <span className="badge badge-r">{currentGroup?.name}</span>
-        <h2 className="serif" style={{marginTop:8}}>내 정보 입력</h2>
+        <span className="badge-lg">{currentGroup?.name}</span>
+        <h2 className="hand" style={{marginTop:8}}>내 정보 입력</h2>
         <p className="muted mt2">이름과 주소를 입력하고 날짜를 골라주세요.</p>
       </div>
       <div className="card">
@@ -618,14 +670,14 @@ function MemberView({ groupId }) {
     return (
       <div className="page-sm">
         <div className="tc mb4">
-          <span className="badge badge-r">{currentGroup?.name}</span>
-          <h2 className="serif" style={{marginTop:8}}>{name}님, 가능한 날짜 선택</h2>
+          <span className="badge-lg">{currentGroup?.name}</span>
+          <h2 className="hand" style={{marginTop:8}}>{name}님, 가능한 날짜 선택</h2>
           <p className="muted mt2">날짜를 누르면 다른 멤버 현황을 볼 수 있어요.</p>
         </div>
 
         {othersTop.length>0 && (
           <div className="card mb4" style={{borderLeft:`3px solid ${C.sage}`,padding:'12px 16px'}}>
-            <div className="lbl mb2">🌿 많이 선택된 날짜</div>
+            <div className="lbl mb2">많이 선택된 날짜</div>
             {othersTop.map(([ds,ns])=>(
               <div key={ds} className="flex jb ic" style={{marginBottom:5,fontSize:12}}>
                 <span>{formatDate(ds)}</span>
@@ -661,8 +713,8 @@ function MemberView({ groupId }) {
 
   return (
     <div className="page-sm tc" style={{paddingTop:70}}>
-      <div style={{fontSize:48,marginBottom:14}}>🌸</div>
-      <h2 className="serif">제출 완료!</h2>
+      <div style={{fontFamily:'IsYun',fontSize:64,marginBottom:14,color:C.blue}}>♡</div>
+      <h2 className="hand">제출 완료!</h2>
       <p className="muted mt2">{name}님의 일정이 등록됐어요.<br/>모임 날짜가 확정되면 알려드릴게요.</p>
       <div className="alert alert-g mt4">선택 날짜: <strong>{dates.length}일</strong></div>
       <button className="btn btn-outline btn-sm mt4" onClick={reset}>다른 사람으로 입력</button>
@@ -678,15 +730,14 @@ export default function App() {
   const [view, setView]         = useState('host');
   const [detailId, setDetailId] = useState(null);
 
-  // 멤버 링크로 접속한 경우
   if (groupId) return (
     <>
       <style>{css}</style>
       <div className="app">
         <div className="hdr">
           <div>
-            <div className="hdr-title">💍 모임 날짜 조율</div>
-            <div className="hdr-sub">청첩장 모임 일정 관리</div>
+            <div className="hdr-title">현석 ♡ 지현</div>
+            <div className="hdr-sub">09 · 13 저희 결혼합니다</div>
           </div>
         </div>
         <MemberView groupId={groupId} />
@@ -700,8 +751,8 @@ export default function App() {
       <div className="app">
         <div className="hdr">
           <div>
-            <div className="hdr-title">💍 모임 날짜 조율</div>
-            <div className="hdr-sub">청첩장 모임 일정 관리</div>
+            <div className="hdr-title">현석 ♡ 지현</div>
+            <div className="hdr-sub">09 · 13 저희 결혼합니다</div>
           </div>
         </div>
 
