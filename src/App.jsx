@@ -392,11 +392,47 @@ function HostDashboard({ onSelectGroup }) {
   );
 }
 
+// ── KakaoTalk Message Modal ───────────────────────────────────────
+function KakaoMsgModal({ group, voteMap, onClose }) {
+  const [copied, setCopied] = useState(false);
+  const confirmed = group.confirmedDates || [];
+  const total = group.members.length;
+
+  const dateLines = confirmed.map(d => {
+    const names = voteMap[d] || [];
+    return `📅 ${formatDate(d)}\n✅ 참석 가능 (${names.length}/${total}명): ${names.join(', ')}`;
+  }).join('\n\n');
+
+  const msg = `💌 [${group.name}] 모임 날짜 확정!\n\n${dateLines}\n\n현석 ♡ 지현의 결혼을 함께해줘서 고마워 💙`;
+
+  const copy = () => {
+    navigator.clipboard?.writeText(msg).catch(()=>{});
+    setCopied(true); setTimeout(()=>setCopied(false), 2000);
+  };
+
+  return (
+    <div className="overlay" onClick={onClose}>
+      <div className="modal" onClick={e=>e.stopPropagation()}>
+        <div className="modal-title mb2">카톡 메시지</div>
+        <p className="muted mb4" style={{fontSize:12}}>복사 후 카카오톡에 붙여넣기 하세요.</p>
+        <div style={{background:C.ivory,border:`1px solid ${C.blue}`,borderRadius:4,padding:16,fontSize:13,lineHeight:1.9,whiteSpace:'pre-wrap',marginBottom:16}}>
+          {msg}
+        </div>
+        <div className="flex g3">
+          <button className="btn btn-outline" onClick={onClose}>닫기</button>
+          <button className="btn btn-primary" style={{flex:1}} onClick={copy}>{copied?'✓ 복사됨':'복사하기'}</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Host: Group Detail ────────────────────────────────────────────
 function GroupDetail({ groupId, onBack }) {
   const { group, loading } = useGroup(groupId);
   const [tab, setTab]       = useState('dates');
   const [copied, setCopied] = useState(false);
+  const [showKakao, setShowKakao] = useState(false);
 
   if (loading) return <div className="page muted tc" style={{paddingTop:60}}><span className="spin">♡</span></div>;
   if (!group)  return <div className="page muted tc" style={{paddingTop:60}}>그룹을 찾을 수 없어요.</div>;
@@ -462,8 +498,28 @@ function GroupDetail({ groupId, onBack }) {
                 <button className="btn btn-ghost btn-sm" onClick={()=>unconfirm(d)}>취소</button>
               </div>
             ))}
+            <button className="btn btn-rose w100 mt2 mb4" onClick={()=>setShowKakao(true)}>
+              💬 카톡 메시지 만들기
+            </button>
             <div className="rule"/>
           </>}
+
+          {group.confirmedDates?.length===0 && sorted.length>=2 && (
+            <div className="card mb4" style={{borderLeft:`3px solid ${C.accentBlue}`}}>
+              <div className="lbl mb2">날짜 후보 TOP {Math.min(sorted.length,3)}</div>
+              <p className="muted mb4" style={{fontSize:12}}>완전 조율이 어려우면 후보 중 확정하세요.</p>
+              {sorted.slice(0,3).map(([ds,names])=>(
+                <div key={ds} className="flex jb ic" style={{marginBottom:12}}>
+                  <div>
+                    <div style={{fontSize:13,fontWeight:500}}>{formatDate(ds)}</div>
+                    <div className="muted" style={{fontSize:11}}>{names.length}/{total}명 가능 · {names.join(', ')}</div>
+                  </div>
+                  <button className="btn btn-confirm btn-sm" onClick={()=>confirmDate(ds)}>확정</button>
+                </div>
+              ))}
+            </div>
+          )}
+
           {sorted.length===0
             ? <div className="muted tc" style={{padding:'36px 0'}}>아직 응답한 멤버가 없어요.</div>
             : sorted.map(([ds,names],i)=>{
@@ -510,6 +566,8 @@ function GroupDetail({ groupId, onBack }) {
       )}
 
       {tab==='place' && <PlaceTab addresses={addresses} />}
+
+      {showKakao && <KakaoMsgModal group={group} voteMap={voteMap} onClose={()=>setShowKakao(false)} />}
     </div>
   );
 }
@@ -524,15 +582,14 @@ function PlaceTab({ addresses }) {
     if (!addresses.length) return;
     setLoading(true); setErr(''); setResult(null);
     try {
-      const prompt = `다음 멤버들의 집 주소:\n${addresses.map(a=>`- ${a.name}: ${a.address}`).join('\n')}\n\n만나기 좋은 중간 지점을 추천해주세요. 반드시 JSON만 응답(다른 텍스트 없이): {"area":"지역명","reason":"이유(2문장 이내)","suggestions":["구체적장소1","구체적장소2","구체적장소3"]}`;
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('/api/recommend', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 500, messages: [{ role: 'user', content: prompt }] }),
+        body: JSON.stringify({ addresses }),
       });
-      const data = await res.json();
-      const text = (data.content||[]).map(c=>c.text||'').join('');
-      setResult(JSON.parse(text.replace(/```json|```/g,'').trim()));
+      if (!res.ok) throw new Error();
+      const result = await res.json();
+      setResult(result);
     } catch { setErr('추천을 가져오지 못했어요. 다시 시도해주세요.'); }
     setLoading(false);
   };
