@@ -703,10 +703,10 @@ function PlaceTab({ addresses }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ addresses }),
       });
-      if (!res.ok) throw new Error();
-      const result = await res.json();
-      setResult(result);
-    } catch { setErr('추천을 가져오지 못했어요. 다시 시도해주세요.'); }
+      const data = await res.json();
+      if (!res.ok) throw new Error(JSON.stringify(data));
+      setResult(data);
+    } catch (e) { setErr(e.message || '추천을 가져오지 못했어요.'); }
     setLoading(false);
   };
 
